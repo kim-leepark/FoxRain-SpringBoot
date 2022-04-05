@@ -1,4 +1,4 @@
-package com.dsm.fox.phrase.rsrq;
+package com.dsm.fox.domain.phrase.rqrs;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ public class PhraseCreateRq {
 
 
     public String getMan(String user){
-        if(man==null) {
+        if(man==null||man.isBlank()) {
             return user;
         }
         return this.man;

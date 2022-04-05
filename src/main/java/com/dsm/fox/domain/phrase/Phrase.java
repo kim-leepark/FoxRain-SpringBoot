@@ -1,15 +1,12 @@
-package com.dsm.fox.phrase;
+package com.dsm.fox.domain.phrase;
 
-import com.dsm.fox.user.User;
+import com.dsm.fox.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +16,7 @@ import javax.persistence.Table;
 @Table
 public class Phrase {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String content;
     private String man;

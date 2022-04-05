@@ -1,12 +1,14 @@
-package com.dsm.fox.phrase.controller;
+package com.dsm.fox.domain.phrase.controller;
 
-import com.dsm.fox.phrase.rsrq.PhraseCreateRq;
-import com.dsm.fox.phrase.service.PhraseService;
+import com.dsm.fox.domain.phrase.rqrs.PhraseCreateRq;
+import com.dsm.fox.domain.phrase.rqrs.PhraseRs;
+import com.dsm.fox.domain.phrase.service.PhraseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/phrase")
 public class PhraseController {
@@ -19,8 +21,8 @@ public class PhraseController {
     }
 
     @GetMapping
-    public void randomPhrase() {
-
+    public PhraseRs randomPhrase() {
+        return phraseService.randomPhrase();
     }
 
 }
