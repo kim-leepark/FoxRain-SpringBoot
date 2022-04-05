@@ -3,8 +3,10 @@ package com.dsm.fox.domain.post.service;
 import com.dsm.fox.domain.post.Post;
 import com.dsm.fox.domain.post.PostRepository;
 import com.dsm.fox.domain.post.rqrs.PostCreateRq;
+import com.dsm.fox.domain.post.rqrs.PostRs;
 import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
+import com.dsm.fox.global.exception.exceptions.PostNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,5 +29,14 @@ public class PostService {
                 .createdAt(LocalDate.now())
                 .user(user).build()
         );
+    }
+
+    public PostRs getPost(int postId) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        return PostRs.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .createdAt(post.getCreatedAt())
+                .userId(post.getUser().getId()).build();
     }
 }
