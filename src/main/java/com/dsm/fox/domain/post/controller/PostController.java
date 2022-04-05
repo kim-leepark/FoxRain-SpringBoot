@@ -16,5 +16,6 @@ public class PostController {
 
     @PostMapping
     public void postCreate(@RequestBody PostCreateRq rq) {
+        postService.postCreate(rq);
     }
 }

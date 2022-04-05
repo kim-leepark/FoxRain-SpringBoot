@@ -21,7 +21,7 @@ public class Post {
     private Integer id;
     private String title;
     private String content;
-    private LocalDate CreatedAt;
+    private LocalDate createdAt;
     @ManyToOne
     private User user;
 }
