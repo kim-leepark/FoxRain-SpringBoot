@@ -22,4 +22,15 @@ public class PostController {
     public PostRs getPost(@PathVariable int postId){
         return postService.getPost(postId);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/post/{postId}")
+    public void deletePost(@PathVariable int postId) {
+        postService.deletePost(postId);
+    }
+
+    @GetMapping("/posts")
+    public void getPostList() {
+
+    }
 }

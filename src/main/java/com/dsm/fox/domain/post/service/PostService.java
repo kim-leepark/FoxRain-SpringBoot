@@ -6,6 +6,7 @@ import com.dsm.fox.domain.post.rqrs.PostCreateRq;
 import com.dsm.fox.domain.post.rqrs.PostRs;
 import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
+import com.dsm.fox.global.exception.BasicException;
 import com.dsm.fox.global.exception.exceptions.PostNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -39,4 +40,18 @@ public class PostService {
                 .createdAt(post.getCreatedAt())
                 .userId(post.getUser().getId()).build();
     }
+
+    public void deletePost(int postId) {
+        if(!writerCheck(postId)) {
+            throw new BasicException("작성자가 아니기때문에 삭제할 수 없습니다", 401);
+        }
+        postRepository.deleteById(postId);
+    }
+
+    private boolean writerCheck(int postId) {
+        int id = 2;
+        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new)
+                .getUser().getId()==id;
+    }
+    // 게시글 목록보기
 }
