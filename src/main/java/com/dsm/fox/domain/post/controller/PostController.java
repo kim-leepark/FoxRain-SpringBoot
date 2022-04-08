@@ -4,8 +4,11 @@ import com.dsm.fox.domain.post.rqrs.PostCreateRq;
 import com.dsm.fox.domain.post.rqrs.PostRs;
 import com.dsm.fox.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +33,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public void getPostList() {
-
+    public List<PostRs> getPostList(final Pageable pageable) {
+        return postService.getPostList(pageable);
     }
 }

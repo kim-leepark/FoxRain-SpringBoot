@@ -10,9 +10,11 @@ import com.dsm.fox.global.exception.BasicException;
 import com.dsm.fox.global.exception.exceptions.PostNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -53,5 +55,8 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new)
                 .getUser().getId()==id;
     }
-    // 게시글 목록보기
+
+    public List<PostRs> getPostList(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
 }
