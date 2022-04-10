@@ -2,10 +2,13 @@ package com.dsm.fox.domain.phrase.service;
 
 import com.dsm.fox.domain.phrase.Phrase;
 import com.dsm.fox.domain.phrase.PhraseRepository;
+import com.dsm.fox.domain.phrase.report.PhraseReport;
+import com.dsm.fox.domain.phrase.report.PhraseReportRepository;
 import com.dsm.fox.domain.phrase.rqrs.PhraseCreateRq;
 import com.dsm.fox.domain.phrase.rqrs.PhraseRs;
 import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
+import com.dsm.fox.global.exception.exceptions.PhraseNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class PhraseService {
     private final PhraseRepository phraseRepository;
     private final UserRepository userRepository;
+    private final PhraseReportRepository reportRepository;
 
     public void phraseRegistration(PhraseCreateRq rq) {
 
@@ -35,5 +39,17 @@ public class PhraseService {
                 .id(phrase.getId())
                 .content(phrase.getContent())
                 .man(phrase.getMan()).build();
+    }
+
+    public void phraseReport(int phraseId, String content) {
+        Phrase phrase = phraseRepository.findById(phraseId).orElseThrow(PhraseNotFoundException::new);
+        int id = 1; // token에서 빼내온 user id
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        reportRepository.save(
+                PhraseReport.builder()
+                        .content(content)
+                        .phrase(phrase)
+                        .user(user).build()
+        );
     }
 }
