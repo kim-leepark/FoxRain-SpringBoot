@@ -8,6 +8,7 @@ import com.dsm.fox.domain.phrase.rqrs.PhraseCreateRq;
 import com.dsm.fox.domain.phrase.rqrs.PhraseRs;
 import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
+import com.dsm.fox.global.exception.BasicException;
 import com.dsm.fox.global.exception.exceptions.PhraseNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,10 @@ public class PhraseService {
         Phrase phrase = phraseRepository.findById(phraseId).orElseThrow(PhraseNotFoundException::new);
         int id = 1; // token에서 빼내온 user id
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        if(reportRepository.existsByUserIdAndPhraseId(user.getId(), phrase.getId())) {
+            throw new BasicException("신고는 두 번 이상할 수 없습니다.",400);
+        }
+
         reportRepository.save(
                 PhraseReport.builder()
                         .content(content)
