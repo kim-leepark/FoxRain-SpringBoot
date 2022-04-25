@@ -26,9 +26,5 @@ public class PhraseController {
         return phraseService.randomPhrase();
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/report/{phraseId}")
-    public void phraseReport(@PathVariable int phraseId, @RequestBody PhraseReportContentRq rq) {
-        phraseService.phraseReport(phraseId, rq.getContent());
-    }
+
 }

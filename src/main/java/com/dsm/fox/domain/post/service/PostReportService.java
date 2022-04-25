@@ -10,6 +10,7 @@ import com.dsm.fox.global.exception.BasicException;
 import com.dsm.fox.global.exception.exceptions.PostNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -32,5 +33,9 @@ public class PostReportService {
                     .user(user)
                     .post(post).build()
         );
+    }
+
+    public void getPostReports(int postId, Pageable pageable) {
+        reportRepository.findAllByPost_Id(postId, pageable).stream();
     }
 }

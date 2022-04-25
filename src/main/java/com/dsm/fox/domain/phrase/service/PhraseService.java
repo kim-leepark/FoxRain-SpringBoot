@@ -42,19 +42,5 @@ public class PhraseService {
                 .man(phrase.getMan()).build();
     }
 
-    public void phraseReport(int phraseId, String content) {
-        Phrase phrase = phraseRepository.findById(phraseId).orElseThrow(PhraseNotFoundException::new);
-        int id = 1; // token에서 빼내온 user id
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        if(reportRepository.existsByUserIdAndPhraseId(user.getId(), phrase.getId())) {
-            throw new BasicException("신고는 두 번 이상할 수 없습니다.",400);
-        }
 
-        reportRepository.save(
-                PhraseReport.builder()
-                        .content(content)
-                        .phrase(phrase)
-                        .user(user).build()
-        );
-    }
 }
