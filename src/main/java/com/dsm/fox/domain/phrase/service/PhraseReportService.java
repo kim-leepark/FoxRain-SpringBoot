@@ -41,8 +41,8 @@ public class PhraseReportService {
         );
     }
 
-    public List<PhraseReportRs> getPhraseList(Pageable pageable) {
-        List<PhraseReportRs> phrases = reportRepository.findAll(pageable)
+    public List<PhraseReportRs> getPhraseList(int id) {
+        List<PhraseReportRs> phrases = reportRepository.findById(id)
                 .stream().map(phrase ->
                         PhraseReportRs.builder()
                                 .id(phrase.getId())

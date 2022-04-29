@@ -23,8 +23,8 @@ public class PhraseReportController {
         reportService.phraseReport(phraseId, rq.getContent());
     }
 
-    @GetMapping("/reports")
-    public List<PhraseReportRs> getPhrases(final Pageable pageable) {
-        return reportService.getPhraseList(pageable);
+    @GetMapping("/report/{id}") // 신고 사유
+    public List<PhraseReportRs> getPhrasesReason(@PathVariable int id) {
+        return reportService.getPhraseList(id);
     }
 }
