@@ -14,6 +14,7 @@ import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +42,8 @@ public class PhraseReportService {
         );
     }
 
-    public List<PhraseReportRs> getPhraseList(int id) {
-        List<PhraseReportRs> phrases = reportRepository.findById(id)
+    public List<PhraseReportRs> getPhraseReportReason(int id) {
+        return reportRepository.findAllByPhraseId(id)
                 .stream().map(phrase ->
                         PhraseReportRs.builder()
                                 .id(phrase.getId())
@@ -51,6 +52,5 @@ public class PhraseReportService {
                                         .id(phrase.getUser().getId())
                                         .name(phrase.getUser().getName())
                                         .build()).build()).collect(Collectors.toList());
-        return phrases;
     }
 }
