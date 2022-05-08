@@ -19,12 +19,12 @@ public class PhraseReportController {
     private final PhraseReportService reportService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/report/{phraseId}")
-    public void phraseReport(@PathVariable int phraseId, @RequestBody PhraseReportContentRq rq) {
+    @PostMapping("/{id}/report")
+    public void phraseReport(@PathVariable("id") int phraseId, @RequestBody PhraseReportContentRq rq) {
         reportService.phraseReport(phraseId, rq.getContent());
     }
 
-    @GetMapping("/report/{id}") // 신고 사유
+    @GetMapping("/{id}/report/reason")
     public List<PhraseReportRs> getPhrasesReason(@PathVariable final int id) {
         return reportService.getPhraseReportReason(id);
     }
