@@ -5,6 +5,7 @@ import com.dsm.fox.domain.phrase.Phrase;
 import com.dsm.fox.domain.phrase.PhraseRepository;
 import com.dsm.fox.domain.phrase.report.PhraseReport;
 import com.dsm.fox.domain.phrase.report.PhraseReportRepository;
+import com.dsm.fox.domain.phrase.rqrs.ReportPhraseRs;
 import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
 import com.dsm.fox.domain.user.UserRs;
@@ -26,6 +27,7 @@ public class PhraseReportService {
     private final PhraseRepository phraseRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void phraseReport(int phraseId, String content) {
         Phrase phrase = phraseRepository.findById(phraseId).orElseThrow(PhraseNotFoundException::new);
         int id = 1; // token에서 빼내온 user id
@@ -40,6 +42,7 @@ public class PhraseReportService {
                         .phrase(phrase)
                         .user(user).build()
         );
+        phrase.countReport();
     }
 
     public List<PhraseReportRs> getPhraseReportReason(int id) {
@@ -52,5 +55,15 @@ public class PhraseReportService {
                                         .id(phrase.getUser().getId())
                                         .name(phrase.getUser().getName())
                                         .build()).build()).collect(Collectors.toList());
+    }
+
+    public List<ReportPhraseRs> getReportPhrases(Pageable pageable) {
+        return phraseRepository.findByReportNumIsNot(pageable, 0)
+                .stream().map(phrase ->
+                        ReportPhraseRs.builder()
+                                    .id(phrase.getId())
+                                    .content(phrase.getContent())
+                                    .man(phrase.getMan())
+                                    .reportNum(phrase.getReportNum()).build()).collect(Collectors.toList());
     }
 }

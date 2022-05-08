@@ -2,6 +2,7 @@ package com.dsm.fox.domain.phrase.controller;
 
 import com.dsm.fox.domain.phrase.rqrs.PhraseReportRs;
 import com.dsm.fox.domain.phrase.rqrs.PhraseReportContentRq;
+import com.dsm.fox.domain.phrase.rqrs.ReportPhraseRs;
 import com.dsm.fox.domain.phrase.service.PhraseReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,13 @@ public class PhraseReportController {
     }
 
     @GetMapping("/report/{id}") // 신고 사유
-    public List<PhraseReportRs> getPhrasesReason(@PathVariable int id) {
-        return reportService.getPhraseList(id);
+    public List<PhraseReportRs> getPhrasesReason(@PathVariable final int id) {
+        return reportService.getPhraseReportReason(id);
+    }
+
+    // 신고 리스트
+    @GetMapping("/reports")
+    public List<ReportPhraseRs> getReportPhrase(Pageable pageable){
+        return reportService.getReportPhrases(pageable);
     }
 }
