@@ -1,5 +1,6 @@
 package com.dsm.fox.domain.post.service;
 
+import com.dsm.fox.domain.phrase.rqrs.ReportReasonRs;
 import com.dsm.fox.domain.post.Post;
 import com.dsm.fox.domain.post.PostRepository;
 import com.dsm.fox.domain.post.report.PostReport;

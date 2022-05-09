@@ -1,6 +1,6 @@
 package com.dsm.fox.domain.phrase.service;
 
-import com.dsm.fox.domain.phrase.rqrs.PhraseReportRs;
+import com.dsm.fox.domain.phrase.rqrs.ReportReasonRs;
 import com.dsm.fox.domain.phrase.Phrase;
 import com.dsm.fox.domain.phrase.PhraseRepository;
 import com.dsm.fox.domain.phrase.report.PhraseReport;
@@ -45,10 +45,10 @@ public class PhraseReportService {
         phrase.countReport();
     }
 
-    public List<PhraseReportRs> getPhraseReportReason(int id) {
+    public List<ReportReasonRs> getPhraseReportReason(int id) {
         return reportRepository.findAllByPhraseId(id)
                 .stream().map(phrase ->
-                        PhraseReportRs.builder()
+                        ReportReasonRs.builder()
                                 .id(phrase.getId())
                                 .content(phrase.getContent())
                                 .user(UserRs.builder()

@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class PhraseReportRs {
+public class ReportReasonRs {
     private final int id;
     private final String content;
     private final UserRs user;
