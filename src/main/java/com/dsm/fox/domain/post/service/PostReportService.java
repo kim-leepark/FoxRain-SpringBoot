@@ -12,6 +12,7 @@ import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +21,7 @@ public class PostReportService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    @Transactional
     public void postReport(String content, int postId) {
         int id = 1;
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
@@ -33,6 +35,7 @@ public class PostReportService {
                     .user(user)
                     .post(post).build()
         );
+        post.increaseReport();
     }
 
     public void getPostReports(int postId, Pageable pageable) {
