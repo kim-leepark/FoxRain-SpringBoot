@@ -7,6 +7,7 @@ import com.dsm.fox.domain.post.report.PostReport;
 import com.dsm.fox.domain.post.report.PostReportRepository;
 import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
+import com.dsm.fox.domain.user.UserRs;
 import com.dsm.fox.global.exception.BasicException;
 import com.dsm.fox.global.exception.exceptions.PostNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
@@ -14,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -39,7 +43,19 @@ public class PostReportService {
         post.increaseReport();
     }
 
-    public void getPostReports(int postId, Pageable pageable) {
-        reportRepository.findAllByPost_Id(postId, pageable).stream();
+    public List<ReportReasonRs> getPostReportReason(int postId) {
+        return reportRepository.findAllByPost_Id(postId).stream().map(
+                report -> ReportReasonRs.builder()
+                                .id(postId)
+                                .content(report.getContent())
+                                .user(UserRs.builder()
+                                        .id(report.getUser().getId())
+                                        .name(report.getUser().getName())
+                                        .build()).build()
+        ).collect(Collectors.toList());
+    }
+
+    public void getReportPosts(Pageable pageable) {
+        postRepository.findByReportNumIsNot(0, pageable);
     }
 }
