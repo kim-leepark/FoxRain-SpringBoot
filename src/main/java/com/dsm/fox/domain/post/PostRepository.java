@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface PostRepository extends CrudRepository<Post, Integer> {
     List<PostRs> findAll(Pageable pageable);
+    List<Post> findByReportNumIsNot(int reportNot, Pageable pageable);
 }

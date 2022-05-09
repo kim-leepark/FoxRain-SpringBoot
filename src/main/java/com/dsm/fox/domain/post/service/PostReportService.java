@@ -5,6 +5,7 @@ import com.dsm.fox.domain.post.Post;
 import com.dsm.fox.domain.post.PostRepository;
 import com.dsm.fox.domain.post.report.PostReport;
 import com.dsm.fox.domain.post.report.PostReportRepository;
+import com.dsm.fox.domain.post.rqrs.ReportPostRs;
 import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
 import com.dsm.fox.domain.user.UserRs;
@@ -55,7 +56,13 @@ public class PostReportService {
         ).collect(Collectors.toList());
     }
 
-    public void getReportPosts(Pageable pageable) {
-        postRepository.findByReportNumIsNot(0, pageable);
+    public List<ReportPostRs> getReportPosts(Pageable pageable) {
+        return postRepository.findByReportNumIsNot(0, pageable).stream().map(
+                post -> ReportPostRs.builder()
+                                .id(post.getId())
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .reportNum(post.getReportNum())
+                                .build()).collect(Collectors.toList());
     }
 }

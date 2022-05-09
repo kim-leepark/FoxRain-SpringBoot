@@ -1,6 +1,6 @@
 package com.dsm.fox.domain.phrase.controller;
 
-import com.dsm.fox.domain.phrase.rqrs.PhraseReportRs;
+import com.dsm.fox.domain.phrase.rqrs.ReportReasonRs;
 import com.dsm.fox.domain.phrase.rqrs.PhraseReportContentRq;
 import com.dsm.fox.domain.phrase.rqrs.ReportPhraseRs;
 import com.dsm.fox.domain.phrase.service.PhraseReportService;
@@ -25,7 +25,7 @@ public class PhraseReportController {
     }
 
     @GetMapping("/{id}/report/reason")
-    public List<PhraseReportRs> getPhrasesReason(@PathVariable final int id) {
+    public List<ReportReasonRs> getPhrasesReason(@PathVariable final int id) {
         return reportService.getPhraseReportReason(id);
     }
 

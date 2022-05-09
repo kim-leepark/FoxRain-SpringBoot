@@ -2,6 +2,7 @@ package com.dsm.fox.domain.post.controller;
 
 import com.dsm.fox.domain.phrase.rqrs.ReportReasonRs;
 import com.dsm.fox.domain.post.rqrs.PostReportRq;
+import com.dsm.fox.domain.post.rqrs.ReportPostRs;
 import com.dsm.fox.domain.post.service.PostReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,7 @@ public class PostReportController {
     }
 
     @GetMapping("/report/posts")
-    public void reportPosts(Pageable pageable) {
-        reportService.getReportPosts(pageable);
+    public List<ReportPostRs> reportPosts(Pageable pageable) {
+        return reportService.getReportPosts(pageable);
     }
 }
