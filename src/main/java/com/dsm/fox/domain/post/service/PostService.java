@@ -20,11 +20,8 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
-    public void postCreate(PostCreateRq rq) {
-        int id = 1; // token에서 빼내온 user id
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public void postCreate(PostCreateRq rq, User user) {
         postRepository.save(
                 Post.builder()
                 .title(rq.getTitle())

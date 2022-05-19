@@ -1,6 +1,7 @@
 package com.dsm.fox.global.security;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Log4j2
 @RequiredArgsConstructor
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -20,18 +22,21 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
+        System.out.println(token);
 
         if(token!=null && jwtUtil.validateToken(token)) {
-            Authentication authentication = jwtUtil.getAuthentication(token);
+//            Authentication authentication = jwtUtil.getAuthentication(token);
+            Authentication authentication = jwtUtil.getAuthenticationAndUser(token);
+            log.info("authentication pass");
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String token = request.getHeader("heater");
+        String token = request.getHeader("Authorization");
 
-        if(token!=null && token.startsWith("prefix")) {
+        if(token!=null && token.startsWith("Bearer")) {
             return token.substring(7);
         }
         return null;
