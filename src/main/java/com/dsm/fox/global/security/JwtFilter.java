@@ -25,9 +25,14 @@ public class JwtFilter extends OncePerRequestFilter {
         System.out.println(token);
 
         if(token!=null && jwtUtil.validateToken(token)) {
-//            Authentication authentication = jwtUtil.getAuthentication(token);
-            Authentication authentication = jwtUtil.getAuthenticationAndUser(token);
-            log.info("authentication pass");
+            Authentication authentication;
+            if(jwtUtil.adminCheck(token)) {
+                authentication = jwtUtil.getAuthenticationAndAdmin(token);
+                log.info("admin authentication");
+            } else {
+                authentication = jwtUtil.getAuthenticationAndUser(token);
+                log.info("user authentication");
+            }
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
