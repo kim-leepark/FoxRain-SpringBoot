@@ -28,19 +28,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class JwtUtil {
-    @Value("{auth.secret}")
-    private String adminSecret;
+//    @Value("{auth.key}")
+    private String adminSecret="FASDFSGW1asdf31!!@#!asdfagdDFSGW1asdf31!";
 //    @Value("{auth.secret}")
     private String userSecret="FASDFSGW1asdf31!!@#!asdfagdDFSGW1asdf31!";
     private final CustomUserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
 
-    public String createAdminToken(String id) {
+    public String createAdminToken(int id, String name) {
         Key key = Keys.hmacShaKeyFor(adminSecret.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
                 .claim("id",id)
-                .claim("name","")
+                .claim("name",name)
                 .setSubject("admin")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+6000*60*24*12))
@@ -61,14 +61,14 @@ public class JwtUtil {
 
     }
 
-    public String getIdFromToken(String token) {
+    public int getIdFromToken(String token) {
         Key key = Keys.hmacShaKeyFor(adminSecret.getBytes(StandardCharsets.UTF_8));
         Claims claims = Jwts.parserBuilder()
                             .setSigningKey(key)
                             .build()
                             .parseClaimsJws(token)
                             .getBody();
-        return (String) claims.get("id");
+        return (int) claims.get("id");
     }
 
     public String getNameFromToken(String token) {
@@ -114,19 +114,19 @@ public class JwtUtil {
     public Authentication getAuthenticationAndAdmin(String token) {
         Admin admin = getAdmin(token);
         List<? super GrantedAuthority> t= new ArrayList<>();
-        t.add(new CustomGrantedAuthority("ADMIN"));
+        t.add(new CustomGrantedAuthority("ROLE_ADMIN"));
 
         List<GrantedAuthority> auth = new ArrayList<>();
-        auth.add(new CustomGrantedAuthority("ADMIN"));
+        auth.add(new CustomGrantedAuthority("ROLE_ADMIN"));
         return new UsernamePasswordAuthenticationToken(admin, null, auth);
     }
 
-    public String adminGetClaims(String token, String type) {
-        return "";
+    public int adminGetClaims(String token, String type) {
+        return 1;
     }
 
     public Admin getAdmin(String token) {
-        return adminRepository.findByName(adminGetClaims(token, "name")).orElseThrow(AdminNotFoundException::new);
+        return adminRepository.findById(getIdFromToken(token)).orElseThrow(AdminNotFoundException::new);
     }
 
     public boolean adminCheck(String token) {
