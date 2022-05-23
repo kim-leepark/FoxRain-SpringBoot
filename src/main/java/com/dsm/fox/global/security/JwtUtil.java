@@ -12,7 +12,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +31,7 @@ public class JwtUtil {
     private String adminSecret="FASDFSGW1asdf31!!@#!asdfagdDFSGW1asdf31!";
 //    @Value("{auth.secret}")
     private String userSecret="FASDFSGW1asdf31!!@#!asdfagdDFSGW1asdf31!";
+    private int time;
     private final CustomUserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
@@ -58,7 +58,6 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis()+6000*60*24*12))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-
     }
 
     public int getIdFromToken(String token) {
@@ -71,19 +70,16 @@ public class JwtUtil {
         return (int) claims.get("id");
     }
 
-    public String getNameFromToken(String token) {
-        Key key = Keys.hmacShaKeyFor(adminSecret.getBytes(StandardCharsets.UTF_8));
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return (String) claims.get("user");
+    public boolean validateToken(String token){
+        //악...
+        return true;
     }
 
-    public boolean validateToken(String token){
-        return true;
-
+    public String getAdminInfo(String token, String type) {
+        return (String) getClaims(token, adminSecret).get(type);
+    }
+    public String getUserInfo(String token, String type) {
+        return (String) getClaims(token, userSecret).get(type);
     }
 
     public String getEmail(String token) {
@@ -97,13 +93,10 @@ public class JwtUtil {
         return (String) claims.get("email");
     }
 
-    public Authentication getAuthentication(String token) {
-        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(getEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
+
 
     public User getUser(String token) {
-        return userRepository.findByEmail(getEmail(token)).orElseThrow(UserNotFoundException::new);
+        return userRepository.findByEmail(getUserInfo(token, "email")).orElseThrow(UserNotFoundException::new);
     }
 
     public Authentication getAuthenticationAndUser(String token) {
@@ -123,21 +116,25 @@ public class JwtUtil {
         return new UsernamePasswordAuthenticationToken(admin, null, auth);
     }
 
-    public int adminGetClaims(String token, String type) {
-        return 1;
-    }
-
     public Admin getAdmin(String token) {
-        return adminRepository.findById(getIdFromToken(token)).orElseThrow(AdminNotFoundException::new);
+        return adminRepository.findByName(getAdminInfo(token, "name")).orElseThrow(AdminNotFoundException::new);
     }
 
     public boolean adminCheck(String token) {
-        Key key = Keys.hmacShaKeyFor(userSecret.getBytes(StandardCharsets.UTF_8));
-        Claims claims = Jwts.parserBuilder()
+        return getClaims(token, adminSecret).getSubject().equals("admin");
+    }
+
+    public Claims getClaims(String token, final String secret) {
+        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.getSubject().equals("admin");
+    }
+
+    public Authentication getAuthentication(String token) {
+        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(getUserInfo(token, "email"));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }
