@@ -32,12 +32,12 @@ public class AdminService {
     }
 
     public AccessTokenRs login(AdminLoginRq rq) {
-        Admin admin = adminRepository.findById(rq.getId()).orElseThrow(UserNotFoundException::new);
+        Admin admin = adminRepository.findByName(rq.getName()).orElseThrow(UserNotFoundException::new);
         if (!admin.getPassword().equals(rq.getPassword())) {
             throw new PasswordNoMatchedException();
         }
         return AccessTokenRs.builder()
-                .accessToken(jwtUtil.createAdminToken(admin.getName())).build();
+                .accessToken(jwtUtil.createAdminToken(admin.getId(), admin.getName())).build();
     }
 
 }
