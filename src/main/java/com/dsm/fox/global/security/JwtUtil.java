@@ -6,10 +6,9 @@ import com.dsm.fox.domain.user.User;
 import com.dsm.fox.domain.user.UserRepository;
 import com.dsm.fox.global.exception.exceptions.AdminNotFoundException;
 import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +27,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class JwtUtil {
-    @Value("{secret.admin}")
+    @Value("${auth.secret.admin}")
     private String adminSecret;
-    @Value("{secret.user}")
+    @Value("${auth.secret.user}")
     private String userSecret;
-    @Value("{auth.time}")
+    @Value("${auth.time}")
     private long time;
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
@@ -107,7 +106,20 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token){
-        //악...
-        return true;
+        try {
+            Jwts.parserBuilder().setSigningKey(userSecret.getBytes(StandardCharsets.UTF_8)).build().parseClaimsJws(token).getBody();
+            return true;
+        } catch (SignatureException e) {
+            log.error("Invalid JWT signature: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: {}", e.getMessage());
+        }
+        return false;
     }
 }
