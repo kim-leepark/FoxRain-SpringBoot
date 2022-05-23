@@ -101,19 +101,18 @@ public class JwtUtil {
 
     public Authentication getAuthenticationAndUser(String token) {
         User user = getUser(token);
-        List<GrantedAuthority> auth = new ArrayList<>();
-        auth.add(new CustomGrantedAuthority("ROLE_USER"));
-        return new UsernamePasswordAuthenticationToken(user, null,auth);
+        return new UsernamePasswordAuthenticationToken(user, null,createAuth("ROLE_USER"));
     }
 
     public Authentication getAuthenticationAndAdmin(String token) {
         Admin admin = getAdmin(token);
-        List<? super GrantedAuthority> t= new ArrayList<>();
-        t.add(new CustomGrantedAuthority("ROLE_ADMIN"));
+        return new UsernamePasswordAuthenticationToken(admin, null, createAuth("ROLE_ADMIN"));
+    }
 
-        List<GrantedAuthority> auth = new ArrayList<>();
-        auth.add(new CustomGrantedAuthority("ROLE_ADMIN"));
-        return new UsernamePasswordAuthenticationToken(admin, null, auth);
+    public List<GrantedAuthority> createAuth(final String auth) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new CustomGrantedAuthority(auth));
+        return grantedAuthorities;
     }
 
     public Admin getAdmin(String token) {
