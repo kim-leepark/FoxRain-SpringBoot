@@ -29,9 +29,9 @@ public class PostController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/post/{postId}")
-    public void deletePost(@PathVariable int postId) {
-        postService.deletePost(postId);
+    @DeleteMapping("/post/{id}")
+    public void deletePost(@AuthenticationPrincipal final User user, @PathVariable int id) {
+        postService.deletePost(id, user);
     }
 
     @GetMapping("/posts")

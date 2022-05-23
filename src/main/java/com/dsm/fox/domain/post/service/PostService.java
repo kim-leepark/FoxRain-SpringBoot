@@ -40,17 +40,16 @@ public class PostService {
                 .userId(post.getUser().getId()).build();
     }
 
-    public void deletePost(int postId) {
-        if(!writerCheck(postId)) {
+    public void deletePost(int id, User user) {
+        if(!writerCheck(id, user)) {
             throw new BasicException("작성자가 아니기때문에 삭제할 수 없습니다", 401);
         }
-        postRepository.deleteById(postId);
+        postRepository.deleteById(id);
     }
 
-    private boolean writerCheck(int postId) {
-        int id = 2;
-        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new)
-                .getUser().getId()==id;
+    private boolean writerCheck(int id, User user) {
+        return postRepository.findById(id).orElseThrow(PostNotFoundException::new)
+                .getUser().equals(user);
     }
 
     public List<PostRs> getPostList(Pageable pageable) {
