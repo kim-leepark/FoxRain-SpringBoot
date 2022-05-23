@@ -108,7 +108,9 @@ public class JwtUtil {
 
     public Authentication getAuthenticationAndUser(String token) {
         User user = getUser(token);
-        return new UsernamePasswordAuthenticationToken(user, null,null);
+        List<GrantedAuthority> auth = new ArrayList<>();
+        auth.add(new CustomGrantedAuthority("ROLE_USER"));
+        return new UsernamePasswordAuthenticationToken(user, null,auth);
     }
 
     public Authentication getAuthenticationAndAdmin(String token) {
