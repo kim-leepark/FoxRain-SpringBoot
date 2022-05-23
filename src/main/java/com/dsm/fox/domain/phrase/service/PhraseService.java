@@ -18,13 +18,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class PhraseService {
     private final PhraseRepository phraseRepository;
-    private final UserRepository userRepository;
     private final PhraseReportRepository reportRepository;
 
-    public void phraseRegistration(PhraseCreateRq rq) {
-
-        int id = 1; // token에서 빼내온 user id
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public void phraseRegistration(PhraseCreateRq rq, User user) {
         phraseRepository.save(
                 Phrase.builder()
                     .content(rq.getContent())
@@ -34,13 +30,21 @@ public class PhraseService {
         );
     }
 
-    public PhraseRs randomPhrase() {
+    public PhraseRs randomPhrase(User user) {
         Phrase phrase = phraseRepository.findRandomPhrase();
         return PhraseRs.builder()
                 .id(phrase.getId())
                 .content(phrase.getContent())
-                .man(phrase.getMan()).build();
+                .man(phrase.getMan())
+                .isReport(userReportCheck(user, phrase.getId()))
+                .build();
     }
 
+    public boolean userReportCheck(User user, int phraseId) {
+        if(user==null) {
+            return false;
+        }
+        return reportRepository.existsByUserIdAndPhraseId(user.getId(), phraseId);
+    }
 
 }

@@ -25,13 +25,10 @@ import java.util.stream.Collectors;
 public class PhraseReportService {
     private final PhraseReportRepository reportRepository;
     private final PhraseRepository phraseRepository;
-    private final UserRepository userRepository;
 
     @Transactional
-    public void phraseReport(int phraseId, String content) {
+    public void phraseReport(int phraseId, String content, User user) {
         Phrase phrase = phraseRepository.findById(phraseId).orElseThrow(PhraseNotFoundException::new);
-        int id = 1; // token에서 빼내온 user id
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         if(reportRepository.existsByUserIdAndPhraseId(user.getId(), phrase.getId())) {
             throw new BasicException("신고는 두 번 이상할 수 없습니다.",400);
         }
