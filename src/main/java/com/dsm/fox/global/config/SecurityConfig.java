@@ -1,10 +1,10 @@
 package com.dsm.fox.global.config;
 
 import com.dsm.fox.global.security.JwtFilter;
-import com.dsm.fox.global.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -30,10 +30,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/post/**").authenticated()
-                .anyRequest().authenticated()
+                .antMatchers("/token").permitAll()
+                .antMatchers("/admin").permitAll()
+                .antMatchers(HttpMethod.GET,"/phrase/{id}/report/reason", "/report/phrase").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/post/{id}/report/reason", "/report/posts").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/post/*","/post","/post/**", "/posts").permitAll()
+                .antMatchers(HttpMethod.GET,"/phrase").permitAll()
+                .anyRequest().hasRole("USER")
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
