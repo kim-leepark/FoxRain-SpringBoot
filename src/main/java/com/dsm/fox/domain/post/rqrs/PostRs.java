@@ -12,6 +12,7 @@ public class PostRs {
     private final String content;
     private final int userId;
     private final LocalDate createdAt;
+    private final boolean isReport;
 }
 
 //인녕 종은아 반가워 딴짓하지말고 공부 열심히해 나중에 ㄱㅌㄷㅈㅈ 가자!

@@ -2,6 +2,7 @@ package com.dsm.fox.domain.post.service;
 
 import com.dsm.fox.domain.post.Post;
 import com.dsm.fox.domain.post.PostRepository;
+import com.dsm.fox.domain.post.report.PostReportRepository;
 import com.dsm.fox.domain.post.rqrs.PostCreateRq;
 import com.dsm.fox.domain.post.rqrs.PostRs;
 import com.dsm.fox.domain.user.User;
@@ -20,6 +21,7 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final PostReportRepository reportRepository;
 
     public void postCreate(PostCreateRq rq, User user) {
         postRepository.save(
@@ -31,13 +33,21 @@ public class PostService {
         );
     }
 
-    public PostRs getPost(int postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+    public PostRs getPost(int id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         return PostRs.builder()
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .isReport(userReportCheck(user, id))
                 .userId(post.getUser().getId()).build();
+    }
+
+    public boolean userReportCheck(User user, int postId) {
+        if(user==null) {
+            return false;
+        }
+        return reportRepository.existsByUserIdAndPostId(user.getId(), postId);
     }
 
     public void deletePost(int id, User user) {

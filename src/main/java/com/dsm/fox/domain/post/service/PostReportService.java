@@ -24,13 +24,10 @@ import java.util.stream.Collectors;
 @Service
 public class PostReportService {
     private final PostReportRepository reportRepository;
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
 
     @Transactional
-    public void postReport(String content, int postId) {
-        int id = 1;
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public void postReport(String content, int postId, User user) {
         if(reportRepository.existsByUserIdAndPostId(user.getId(), postId)) {
             throw new BasicException("신고는 두 번 이상할 수 없습니다.",400);
         }

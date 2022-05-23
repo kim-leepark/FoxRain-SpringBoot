@@ -23,9 +23,9 @@ public class PostController {
         postService.postCreate(rq, user);
     }
 
-    @GetMapping("/post/{postId}")
-    public PostRs getPost(@PathVariable int postId){
-        return postService.getPost(postId);
+    @GetMapping("/post/{id}")
+    public PostRs getPost(@AuthenticationPrincipal final User user,@PathVariable int id){
+        return postService.getPost(id, user);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
