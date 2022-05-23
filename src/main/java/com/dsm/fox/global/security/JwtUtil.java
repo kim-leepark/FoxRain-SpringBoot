@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,12 +28,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class JwtUtil {
-//    @Value("{auth.key}")
-    private String adminSecret="FASDFSGW1asdf31!!@#!asdfagdDFSGW1asdf31!";
-//    @Value("{auth.secret}")
-    private String userSecret="FASDFSGW1asdf31!!@#!asdfagdDFSGW1asdf31!";
-    private int time;
-    private final CustomUserDetailsService userDetailsService;
+    @Value("{secret.admin}")
+    private String adminSecret;
+    @Value("{secret.user}")
+    private String userSecret;
+    @Value("{auth.time}")
+    private long time;
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
 
@@ -43,7 +44,7 @@ public class JwtUtil {
                 .claim("name",name)
                 .setSubject("admin")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+6000*60*24*12))
+                .setExpiration(new Date(System.currentTimeMillis()+time*60*60*24*12))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -55,45 +56,35 @@ public class JwtUtil {
                 .claim("id",id)
                 .setSubject("user")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+6000*60*24*12))
+                .setExpiration(new Date(System.currentTimeMillis()+time*60*24*12))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public int getIdFromToken(String token) {
-        Key key = Keys.hmacShaKeyFor(adminSecret.getBytes(StandardCharsets.UTF_8));
-        Claims claims = Jwts.parserBuilder()
-                            .setSigningKey(key)
-                            .build()
-                            .parseClaimsJws(token)
-                            .getBody();
-        return (int) claims.get("id");
-    }
-
-    public boolean validateToken(String token){
-        //악...
-        return true;
+    public Admin getAdmin(String token) {
+        return adminRepository.findByName(getAdminInfo(token, "name")).orElseThrow(AdminNotFoundException::new);
     }
 
     public String getAdminInfo(String token, String type) {
         return (String) getClaims(token, adminSecret).get(type);
     }
+
     public String getUserInfo(String token, String type) {
         return (String) getClaims(token, userSecret).get(type);
     }
 
-    public String getEmail(String token) {
-        Key key = Keys.hmacShaKeyFor(userSecret.getBytes(StandardCharsets.UTF_8));
-        Claims claims = Jwts.parserBuilder()
+    public boolean adminCheck(String token) {
+        return getClaims(token, adminSecret).getSubject().equals("admin");
+    }
+
+    public Claims getClaims(String token, final String secret) {
+        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        return (String) claims.get("email");
     }
-
-
 
     public User getUser(String token) {
         return userRepository.findByEmail(getUserInfo(token, "email")).orElseThrow(UserNotFoundException::new);
@@ -115,25 +106,8 @@ public class JwtUtil {
         return grantedAuthorities;
     }
 
-    public Admin getAdmin(String token) {
-        return adminRepository.findByName(getAdminInfo(token, "name")).orElseThrow(AdminNotFoundException::new);
-    }
-
-    public boolean adminCheck(String token) {
-        return getClaims(token, adminSecret).getSubject().equals("admin");
-    }
-
-    public Claims getClaims(String token, final String secret) {
-        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    public Authentication getAuthentication(String token) {
-        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(getUserInfo(token, "email"));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    public boolean validateToken(String token){
+        //악...
+        return true;
     }
 }
