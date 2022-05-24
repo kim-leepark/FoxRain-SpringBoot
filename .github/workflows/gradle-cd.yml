@@ -5,7 +5,7 @@ on:
   workflow_run:
     workflows: ["Foxrain CI"]
     types:
-      - completeed
+      - completed
 
 jobs:
   CD:
