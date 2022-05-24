@@ -13,8 +13,8 @@ jobs:
       DB_URL: ${{secrets.DB_URL}}
       DB_USERNAME: ${{secrets.DB_USERNAME}}
       DB_PW: ${{secrets.DB_PW}}
-      SECRET_USER: ${{secret.SECRET_USER}}
-      SECRET_ADMIN: ${{secret.SECRET_ADMIN}}
+      SECRET_USER: ${{secrets.SECRET_USER}}
+      SECRET_ADMIN: ${{secrets.SECRET_ADMIN}}
       
     
     steps:
