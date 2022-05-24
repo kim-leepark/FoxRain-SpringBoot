@@ -24,7 +24,10 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-      
+    
+    - name: Build with Gradle
+      run: ./gradlew clean build
+    
     - name: grant privileges to gradlew
       run: chmod +x gradlew
     
