@@ -8,6 +8,8 @@ spring:
     password: ${DB_PW:}
   jpa:
     show-sql: true
+  main:
+    allow-circular-references: true
 
 auth:
   time: 6000
