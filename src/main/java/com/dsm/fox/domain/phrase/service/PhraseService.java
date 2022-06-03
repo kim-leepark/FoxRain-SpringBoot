@@ -32,6 +32,9 @@ public class PhraseService {
 
     public PhraseRs randomPhrase(User user) {
         Phrase phrase = phraseRepository.findRandomPhrase();
+        if(phrase==null) {
+            throw new PhraseNotFoundException();
+        }
         return PhraseRs.builder()
                 .id(phrase.getId())
                 .content(phrase.getContent())
