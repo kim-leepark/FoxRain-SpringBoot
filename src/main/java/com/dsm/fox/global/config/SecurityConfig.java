@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         corsRegistry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedHeaders("*")
-                .allowedMethods("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowCredentials(false);
     }
 }
