@@ -30,7 +30,7 @@ public class PhraseReportController {
         return reportService.getPhraseReportReason(id);
     }
 
-    @GetMapping("/report/phrase")
+    @GetMapping("/report/phrases")
     public List<ReportPhraseRs> getReportPhrase(Pageable pageable){
         return reportService.getReportPhrases(pageable);
     }
