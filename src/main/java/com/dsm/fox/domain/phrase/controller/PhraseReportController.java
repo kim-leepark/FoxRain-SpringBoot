@@ -25,7 +25,7 @@ public class PhraseReportController {
         reportService.phraseReport(phraseId, rq.getContent(), user);
     }
 
-    @GetMapping("/phrase/{id}/report/reason")
+    @GetMapping("/phrase/{id}/report/reasons")
     public List<ReportReasonRs> getPhrasesReason(@PathVariable final int id) {
         return reportService.getPhraseReportReason(id);
     }
