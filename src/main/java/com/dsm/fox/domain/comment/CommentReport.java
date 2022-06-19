@@ -1,0 +1,27 @@
+package com.dsm.fox.domain.comment;
+
+import com.dsm.fox.domain.post.Post;
+import com.dsm.fox.domain.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Entity
+@Table
+public class CommentReport {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String content;
+    @OneToOne(fetch = FetchType.LAZY)
+    private User user;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Comment post;
+}
