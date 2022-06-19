@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .antMatchers(HttpMethod.GET,"/post/{id}/report/reasons", "/report/posts").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET,"/post/*","/post","/post/**", "/posts").permitAll()
                 .antMatchers(HttpMethod.GET,"/phrase").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/admin/post/{id}").hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

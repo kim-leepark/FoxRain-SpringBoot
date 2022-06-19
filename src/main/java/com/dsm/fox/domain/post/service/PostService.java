@@ -1,18 +1,18 @@
 package com.dsm.fox.domain.post.service;
 
+import com.dsm.fox.domain.comment.CommentReportRepository;
 import com.dsm.fox.domain.post.Post;
 import com.dsm.fox.domain.post.PostRepository;
 import com.dsm.fox.domain.post.report.PostReportRepository;
 import com.dsm.fox.domain.post.rqrs.PostCreateRq;
 import com.dsm.fox.domain.post.rqrs.PostRs;
 import com.dsm.fox.domain.user.User;
-import com.dsm.fox.domain.user.UserRepository;
 import com.dsm.fox.global.exception.BasicException;
 import com.dsm.fox.global.exception.exceptions.PostNotFoundException;
-import com.dsm.fox.global.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +22,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final PostReportRepository reportRepository;
+    private final CommentReportRepository commentReportRepository;
 
     public void postCreate(PostCreateRq rq, User user) {
         postRepository.save(
@@ -50,10 +51,14 @@ public class PostService {
         return reportRepository.existsByUserIdAndPostId(user.getId(), postId);
     }
 
+    @Transactional
     public void deletePost(int id, User user) {
         if(!writerCheck(id, user)) {
             throw new BasicException("작성자가 아니기때문에 삭제할 수 없습니다", 401);
         }
+
+        commentReportRepository.deleteAllByPostId(id);
+        reportRepository.deleteAllByPostId(id);
         postRepository.deleteById(id);
     }
 
